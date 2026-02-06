@@ -1,0 +1,650 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Valentine Proposal</title>
+    <style>
+      :root {
+        --card-bg: rgba(255, 255, 255, 0.2);
+        --accent: #e91e63;
+        --accent-dark: #c2185b;
+        --yes-scale: 1;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        font-family: "Trebuchet MS", "Segoe Script", "Segoe UI", sans-serif;
+        color: #2b2b2b;
+        overflow: hidden;
+      }
+
+      .bg {
+        position: fixed;
+        inset: 0;
+        z-index: -2;
+        background-size: cover;
+        background-position: center;
+        transition: opacity 1.2s ease-in-out;
+      }
+
+      .bg.layer-1 {
+        opacity: 1;
+      }
+
+      .bg.layer-2 {
+        opacity: 0;
+      }
+
+      .bg-overlay {
+        position: fixed;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(255, 214, 228, 0.52), rgba(255, 245, 245, 0.36));
+        z-index: -1;
+      }
+
+      .container {
+        min-height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+        position: relative;
+      }
+
+      .card {
+        width: min(520px, 92vw);
+        background: var(--card-bg);
+        border-radius: 24px;
+        padding: 32px 28px;
+        box-shadow: 0 20px 45px rgba(0, 0, 0, 0.18);
+        text-align: center;
+        backdrop-filter: blur(4px);
+      }
+
+      h1 {
+        margin: 0 0 20px;
+        font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+      }
+
+      .buttons {
+        display: flex;
+        gap: 16px;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-top: 18px;
+        position: relative;
+        min-height: 78px;
+      }
+
+      button {
+        border: none;
+        padding: 0 24px;
+        height: 54px;
+        border-radius: 999px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 130px;
+        white-space: nowrap;
+      }
+
+      #yesBtn {
+        background: var(--accent);
+        color: white;
+        position: relative;
+        z-index: 2;
+        box-shadow: 0 12px 25px rgba(233, 30, 99, 0.35);
+        width: 150px;
+      }
+
+      #yesBtn:hover {
+        background: var(--accent-dark);
+      }
+
+      #noBtn {
+        background: #f3f3f3;
+        color: #333;
+        position: relative;
+        z-index: 2;
+        border: 2px solid #d7a2b6;
+        box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
+        width: 102px;
+        font-size: 0.95rem;
+      }
+
+      .message,
+      .hint {
+        margin-top: 20px;
+        font-size: 1.1rem;
+        display: none;
+      }
+
+      .message.show,
+      .hint.show {
+        display: block;
+        animation: pop 0.4s ease-out;
+      }
+
+      .hint {
+        font-size: 0.95rem;
+        color: #7a3b52;
+        margin-top: 12px;
+      }
+
+      .celebrate {
+        display: none;
+        margin-top: 16px;
+      }
+
+      .celebrate.show {
+        display: block;
+      }
+
+      .teddy {
+        width: min(220px, 70vw);
+        margin: 10px auto 0;
+        display: block;
+        animation: pop 0.5s ease-out;
+        filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.25));
+      }
+
+      .intro-gif {
+        width: min(210px, 62vw);
+        margin: 12px auto 0;
+        display: block;
+        animation: pop 0.45s ease-out;
+        filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.2));
+      }
+
+      .no-gif {
+        display: none;
+      }
+
+      .no-gif.show {
+        display: block;
+      }
+
+      .tada {
+        font-size: 1.2rem;
+        color: var(--accent-dark);
+        font-weight: 700;
+        margin-top: 6px;
+        animation: pop 0.5s ease-out;
+      }
+
+      @keyframes pop {
+        from {
+          transform: scale(0.9);
+          opacity: 0;
+        }
+        to {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+
+      .reset {
+        margin-top: 16px;
+        display: none;
+      }
+
+      .reset.show {
+        display: inline-block;
+      }
+
+      .hearts {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        overflow: hidden;
+        z-index: 2;
+      }
+
+      .heart {
+        position: absolute;
+        width: 18px;
+        height: 18px;
+        background: var(--accent);
+        transform: rotate(45deg);
+        animation: floatUp 4s linear infinite;
+        opacity: 0.9;
+      }
+
+      .heart::before,
+      .heart::after {
+        content: "";
+        position: absolute;
+        width: 18px;
+        height: 18px;
+        background: var(--accent);
+        border-radius: 50%;
+      }
+
+      .heart::before {
+        top: -9px;
+        left: 0;
+      }
+
+      .heart::after {
+        left: -9px;
+        top: 0;
+      }
+
+      @keyframes floatUp {
+        0% {
+          transform: translateY(0) rotate(45deg) scale(0.9);
+          opacity: 0;
+        }
+        10% {
+          opacity: 0.9;
+        }
+        100% {
+          transform: translateY(-110vh) rotate(45deg) scale(1.2);
+          opacity: 0;
+        }
+      }
+
+      @media (max-width: 600px) {
+        .card {
+          padding: 26px 22px;
+        }
+
+        button {
+          width: auto;
+          min-width: 140px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="bg layer-1" id="bg1"></div>
+    <div class="bg layer-2" id="bg2"></div>
+    <div class="bg-overlay"></div>
+
+    <div class="container">
+      <div class="card">
+        <h1 id="headline">Will you be my Valentine<br />Rey Gundu?</h1>
+        <div class="buttons">
+          <button id="yesBtn">Yes</button>
+          <button id="noBtn">No</button>
+        </div>
+        <img
+          class="intro-gif"
+          id="introGif"
+          alt="Cute intro teddy gif"
+          src="assets/forpage1.gif"
+        />
+        <div class="hint" id="hint">Please select a correct option.</div>
+        <img class="teddy no-gif" id="noGif" alt="Sad teddy gif" />
+        <div class="message" id="message">
+          You just made my heart skip a beat! Happy Valentine's Day, wifeyyy! 💖
+        </div>
+        <div class="celebrate" id="celebrate">
+          <img
+            class="teddy"
+            alt="Cute teddy bear"
+            src="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif"
+          />
+          <div class="tada">Indhu vadana, kundaradana, mandagamana, madhura vachana<br />waaawwww nice</div>
+        </div>
+        <button class="reset" id="resetBtn">Try Again</button>
+      </div>
+    </div>
+
+    <div class="hearts" id="hearts"></div>
+
+    <script>
+      const backgrounds = [
+        "assets/bg1.png",
+        "assets/bg2.png",
+        "assets/bg3.png",
+        "assets/bg4.jpg",
+      ];
+
+      const bg1 = document.getElementById("bg1");
+      const bg2 = document.getElementById("bg2");
+      let bgIndex = 0;
+      let showingFirst = true;
+
+      function setBackground(el, url) {
+        el.style.backgroundImage = `url("${url}")`;
+      }
+
+      setBackground(bg1, backgrounds[0]);
+      setBackground(bg2, backgrounds[1]);
+
+      setInterval(() => {
+        bgIndex = (bgIndex + 1) % backgrounds.length;
+        const nextUrl = backgrounds[bgIndex];
+        if (showingFirst) {
+          setBackground(bg2, nextUrl);
+          bg2.style.opacity = "1";
+          bg1.style.opacity = "0";
+        } else {
+          setBackground(bg1, nextUrl);
+          bg1.style.opacity = "1";
+          bg2.style.opacity = "0";
+        }
+        showingFirst = !showingFirst;
+      }, 6000);
+
+      const noBtn = document.getElementById("noBtn");
+      const yesBtn = document.getElementById("yesBtn");
+      const headline = document.getElementById("headline");
+      const message = document.getElementById("message");
+      const introGif = document.getElementById("introGif");
+      const hint = document.getElementById("hint");
+      const noGif = document.getElementById("noGif");
+      const celebrate = document.getElementById("celebrate");
+      const hearts = document.getElementById("hearts");
+      const buttons = document.querySelector(".buttons");
+      const resetBtn = document.getElementById("resetBtn");
+
+      let yesScale = 1;
+      let noScale = 1;
+
+      const noMessages = [
+        "Taggede le... yes kosam wait chesthuna.",
+        "Are you sure? The Yes button looks great!",
+        "Pretty please? I made this just for you.",
+        "Come on, say yes and make it special!",
+        "I promise it will be the sweetest yes.",
+        "Nenu once decide ayithe, no kuda yes avvali... pleaseeee laaaa.",
+      ];
+      let noCount = 0;
+      const maxNoBeforeFinal = noMessages.length;
+      const noGifSequence = [
+        "https://media.giphy.com/media/3o6ZtaO9BZHcOjmErm/giphy.gif",
+        "https://media.giphy.com/media/kfRKF0iqA8jyDqq1nH/giphy.gif",
+        "https://media.giphy.com/media/26ufcVAp3AiJJsrIs/giphy.gif",
+        "https://media.giphy.com/media/5Xo3fWaYe5S8n9iYKN/giphy.gif",
+        "https://media.giphy.com/media/s3E7PjHdZ6xwWHdzEt/giphy.gif",
+        "https://media.giphy.com/media/9Y5BbDSkSTiY8/giphy.gif",
+      ];
+
+      function showNoGifForStep(stepIndex) {
+        const safeIndex = Math.max(0, Math.min(stepIndex, noGifSequence.length - 1));
+        noGif.src = `${noGifSequence[safeIndex]}?v=${Date.now()}`;
+        noGif.classList.add("show");
+      }
+
+      function moveNoButton() {
+        const padding = 12;
+        buttons.style.minHeight = "190px";
+        introGif.style.display = "none";
+        playSadTone();
+
+        const boxRect = buttons.getBoundingClientRect();
+        const noRectBefore = noBtn.getBoundingClientRect();
+        const noStartX =
+          noBtn.style.position === "absolute" && Number.isFinite(parseFloat(noBtn.style.left))
+            ? parseFloat(noBtn.style.left)
+            : noRectBefore.left - boxRect.left;
+        const noStartY =
+          noBtn.style.position === "absolute" && Number.isFinite(parseFloat(noBtn.style.top))
+            ? parseFloat(noBtn.style.top)
+            : noRectBefore.top - boxRect.top;
+
+        yesScale = Math.min(2.2, yesScale * 1.16);
+        const baseYesFont = 16;
+        const baseYesWidth = 150;
+        const baseYesHeight = 54;
+        const yesWidth = baseYesWidth * yesScale;
+        const yesHeight = baseYesHeight * (1 + (yesScale - 1) * 0.75);
+        const maxYesX = Math.max(padding, boxRect.width - yesWidth - padding);
+        const maxYesY = Math.max(padding, boxRect.height - yesHeight - padding);
+        const clampedYesX = Math.min(maxYesX, Math.max(padding, noStartX));
+        const clampedYesY = Math.min(maxYesY, Math.max(padding, noStartY));
+        yesBtn.style.fontSize = `${Math.min(28, baseYesFont * (1 + (yesScale - 1) * 0.55))}px`;
+        yesBtn.style.width = `${yesWidth}px`;
+        yesBtn.style.height = `${yesHeight}px`;
+        yesBtn.style.position = "absolute";
+        yesBtn.style.left = `${clampedYesX}px`;
+        yesBtn.style.top = `${clampedYesY}px`;
+        yesBtn.style.zIndex = "3";
+
+        noScale = Math.max(0.45, noScale * 0.88);
+        const baseNoWidth = 102;
+        const baseNoHeight = 54;
+        const baseNoFont = 15.2;
+        noBtn.style.width = `${baseNoWidth * noScale}px`;
+        noBtn.style.height = `${baseNoHeight * noScale}px`;
+        noBtn.style.fontSize = `${Math.max(9, baseNoFont * noScale)}px`;
+
+        const btnRect = noBtn.getBoundingClientRect();
+        const maxX = Math.max(padding, boxRect.width - btnRect.width - padding);
+        const maxY = Math.max(padding, boxRect.height - btnRect.height - padding);
+        const yesRect = yesBtn.getBoundingClientRect();
+        const yesBox = {
+          left: yesRect.left - boxRect.left,
+          top: yesRect.top - boxRect.top,
+          right: yesRect.right - boxRect.left,
+          bottom: yesRect.bottom - boxRect.top,
+        };
+
+        const gap = 24;
+        const candidates = [];
+        if (yesBox.left - gap - btnRect.width >= padding) {
+          candidates.push({
+            xMin: padding,
+            xMax: yesBox.left - gap - btnRect.width,
+            yMin: padding,
+            yMax: maxY,
+          });
+        }
+        if (yesBox.right + gap <= maxX) {
+          candidates.push({
+            xMin: yesBox.right + gap,
+            xMax: maxX,
+            yMin: padding,
+            yMax: maxY,
+          });
+        }
+        if (yesBox.top - gap - btnRect.height >= padding) {
+          candidates.push({
+            xMin: padding,
+            xMax: maxX,
+            yMin: padding,
+            yMax: yesBox.top - gap - btnRect.height,
+          });
+        }
+        if (yesBox.bottom + gap <= maxY) {
+          candidates.push({
+            xMin: padding,
+            xMax: maxX,
+            yMin: yesBox.bottom + gap,
+            yMax: maxY,
+          });
+        }
+
+        let randX = padding;
+        let randY = padding;
+        const currentX = noStartX;
+        const currentY = noStartY;
+        if (candidates.length > 0) {
+          let bestX = currentX;
+          let bestY = currentY;
+          let bestDistance = -1;
+          for (let i = 0; i < 20; i++) {
+            const c = candidates[Math.floor(Math.random() * candidates.length)];
+            const x = c.xMin + Math.random() * (c.xMax - c.xMin);
+            const y = c.yMin + Math.random() * (c.yMax - c.yMin);
+            const d = Math.hypot(x - currentX, y - currentY);
+            if (d > bestDistance) {
+              bestDistance = d;
+              bestX = x;
+              bestY = y;
+            }
+          }
+          randX = bestX;
+          randY = bestY;
+        }
+
+        noBtn.style.position = "absolute";
+        noBtn.style.left = `${randX}px`;
+        noBtn.style.top = `${randY}px`;
+
+        if (noCount < maxNoBeforeFinal) {
+          showNoGifForStep(noCount);
+          hint.textContent = noMessages[noCount];
+        } else {
+          noGif.classList.remove("show");
+          noGif.src = "";
+          hint.textContent =
+            "No worries, you are already my wife. Plot twist: I win forever.";
+          if (!document.getElementById("finalGif")) {
+            const img = document.createElement("img");
+            img.id = "finalGif";
+            img.className = "teddy";
+            img.alt = "Cute teddy bear gif";
+            img.src = "https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif";
+            hint.insertAdjacentElement("afterend", img);
+          }
+          hideButtons();
+          showReset();
+          headline.textContent = "Husband approved. Valentine official.";
+        }
+        noCount += 1;
+        hint.classList.add("show");
+      }
+
+      noBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        moveNoButton();
+      });
+
+      function createHeart() {
+        const heart = document.createElement("div");
+        heart.className = "heart";
+        const size = 12 + Math.random() * 20;
+        const left = Math.random() * 100;
+        const duration = 3 + Math.random() * 2.5;
+        heart.style.left = `${left}vw`;
+        heart.style.width = `${size}px`;
+        heart.style.height = `${size}px`;
+        heart.style.animationDuration = `${duration}s`;
+        hearts.appendChild(heart);
+        setTimeout(() => heart.remove(), duration * 1000);
+      }
+
+      let heartInterval = null;
+
+      function showReset() {
+        resetBtn.classList.add("show");
+        buttons.style.minHeight = "0";
+      }
+
+      function hideButtons() {
+        yesBtn.style.display = "none";
+        noBtn.style.display = "none";
+      }
+
+      yesBtn.addEventListener("click", () => {
+        introGif.style.display = "none";
+        message.classList.add("show");
+        celebrate.classList.add("show");
+        noGif.classList.remove("show");
+        hideButtons();
+        hint.classList.remove("show");
+        showReset();
+        headline.innerHTML = "Yes detected.<br />mode: unstoppable.";
+        if (!heartInterval) {
+          heartInterval = setInterval(() => {
+            for (let i = 0; i < 3; i++) createHeart();
+          }, 350);
+        }
+        playTada();
+      });
+
+      resetBtn.addEventListener("click", () => {
+        yesScale = 1;
+        noScale = 1;
+        yesBtn.style.fontSize = "";
+        yesBtn.style.width = "";
+        yesBtn.style.height = "";
+        yesBtn.style.position = "relative";
+        yesBtn.style.left = "";
+        yesBtn.style.top = "";
+        yesBtn.style.zIndex = "";
+        noBtn.style.width = "";
+        noBtn.style.height = "";
+        noBtn.style.fontSize = "";
+        yesBtn.style.display = "inline-block";
+        noBtn.style.display = "inline-block";
+        noBtn.style.position = "relative";
+        noBtn.style.left = "";
+        noBtn.style.top = "";
+        introGif.style.display = "block";
+        buttons.style.minHeight = "78px";
+        headline.innerHTML = "Will you be my Valentine<br />Rey Gundu?";
+        hint.classList.remove("show");
+        noGif.classList.remove("show");
+        noGif.src = "";
+        message.classList.remove("show");
+        celebrate.classList.remove("show");
+        resetBtn.classList.remove("show");
+        noCount = 0;
+        const finalGif = document.getElementById("finalGif");
+        if (finalGif) finalGif.remove();
+        if (heartInterval) {
+          clearInterval(heartInterval);
+          heartInterval = null;
+        }
+      });
+
+      function playTada() {
+        try {
+          const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+          const now = audioCtx.currentTime;
+          const tones = [523.25, 659.25, 783.99];
+          tones.forEach((freq, i) => {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = "triangle";
+            osc.frequency.value = freq;
+            gain.gain.setValueAtTime(0.0001, now + i * 0.05);
+            gain.gain.exponentialRampToValueAtTime(0.3, now + i * 0.05 + 0.02);
+            gain.gain.exponentialRampToValueAtTime(0.0001, now + i * 0.05 + 0.35);
+            osc.connect(gain).connect(audioCtx.destination);
+            osc.start(now + i * 0.05);
+            osc.stop(now + i * 0.05 + 0.36);
+          });
+        } catch (e) {
+          // no-op if audio context is blocked
+        }
+      }
+
+      function playSadTone() {
+        try {
+          const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+          const now = audioCtx.currentTime;
+          const tones = [349.23, 329.63, 293.66];
+          tones.forEach((freq, i) => {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = "sine";
+            osc.frequency.value = freq;
+            gain.gain.setValueAtTime(0.0001, now + i * 0.08);
+            gain.gain.exponentialRampToValueAtTime(0.17, now + i * 0.08 + 0.03);
+            gain.gain.exponentialRampToValueAtTime(0.0001, now + i * 0.08 + 0.26);
+            osc.connect(gain).connect(audioCtx.destination);
+            osc.start(now + i * 0.08);
+            osc.stop(now + i * 0.08 + 0.27);
+          });
+        } catch (e) {
+          // no-op if audio context is blocked
+        }
+      }
+    </script>
+  </body>
+</html>
